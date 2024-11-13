@@ -20,9 +20,25 @@ public class StudentController {
 
     private final StudentRepository studentRepository;
 
+    // Display the main page at the root URL ("/")
     @GetMapping("/")
-    public String redirectToIndex() {
-        return "redirect:/index";
+    public String students2(Model model, ModelMap mm,
+                            @RequestParam(name = "keyword", defaultValue = "") String keyword) {
+        List<Student> students;
+        if (keyword.isEmpty()) {
+            students = studentRepository.findAll(); // Fetch all students if no keyword is provided
+        } else {
+            try {
+                mm.put("e", 0);
+                mm.put("a", 0);
+                long key = Long.parseLong(keyword);
+                students = studentRepository.findStudentById(key); // Fetch student by ID
+            } catch (NumberFormatException e) {
+                students = List.of(); // Return empty list if keyword is not a valid number
+            }
+        }
+        model.addAttribute("listStudents", students); // Add the list of students to the model
+        return "students"; // Render the students view
     }
 
     @GetMapping(path = "/index")
@@ -35,7 +51,7 @@ public class StudentController {
                 long key = Long.parseLong(keyword);
                 students = studentRepository.findStudentById(key);
             } catch (NumberFormatException e) {
-                students = List.of(); // Return empty list if keyword is not a valid number
+                students = List.of();
             }
         }
         model.addAttribute("listStudents", students);
@@ -53,25 +69,24 @@ public class StudentController {
         if (bindingResult.hasErrors()) {
             return "formStudents";
         }
-        studentRepository.save(student); // Save new or edited student
-        return "redirect:/index";
+        studentRepository.save(student);
+        return "redirect:/"; // Redirect to the main page (root URL)
     }
 
     @GetMapping("/delete/{id}")
     public String deleteStudent(@PathVariable("id") Long id) {
-        studentRepository.deleteById(id); // Delete student by ID
-        return "redirect:/index";
+        studentRepository.deleteById(id);
+        return "redirect:/"; // Redirect to the main page (root URL)
     }
 
     // New method to handle editing
     @GetMapping("/editStudents")
     public String editStudent(@RequestParam("id") Long id, Model model) {
-        // Find the student by ID and pass it to the form
         Student student = studentRepository.findById(id).orElse(null);
         if (student != null) {
-            model.addAttribute("student", student); // Add student to model for pre-filling
+            model.addAttribute("student", student);
             return "formStudents"; // Reuse formStudents.html for editing
         }
-        return "redirect:/index"; // If student not found, redirect to main page
+        return "redirect:/"; // If student not found, redirect to main page
     }
 }
