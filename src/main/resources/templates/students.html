@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="template1"> <!-- Applies the layout from template1.html -->
 <head>
   <meta charset="UTF-8">
   <title>List of Students</title>
   <link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
   <style>
+    /* Content-specific styling */
     .pre-scrollable {
       height: 500px;
       overflow-y: scroll;
     }
     h1 {
       text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -28,7 +30,7 @@
         <button type="submit" class="btn btn-primary">Search</button>
         <button type="submit" class="btn btn-primary">See All</button>
       </form>
-      <table class="table">
+      <table class="table mt-3">
         <thead>
         <tr>
           <th>ID</th>

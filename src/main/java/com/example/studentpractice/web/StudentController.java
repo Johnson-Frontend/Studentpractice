@@ -1,50 +1,56 @@
 package com.example.studentpractice.web;
 
-import com.example.studentpractice.entities.Student;
 import com.example.studentpractice.repositories.StudentRepository;
+import com.example.studentpractice.entities.Student;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Controller
 @AllArgsConstructor
 public class StudentController {
-
     private final StudentRepository studentRepository;
 
-    // Redirect from root path ("/") to "/index"
+    // Static flag to indicate success message
+    static int num = 0;
+
     @GetMapping("/")
     public String redirectToIndex() {
         return "redirect:/index";
     }
 
-    // Display students list with optional search keyword
     @GetMapping(path = "/index")
     public String students(Model model, @RequestParam(name = "keyword", defaultValue = "") String keyword) {
         List<Student> students;
         if (keyword.isEmpty()) {
-            students = studentRepository.findAll(); // Fetch all students if no keyword
+            students = studentRepository.findAll();
         } else {
-            try {
-                long key = Long.parseLong(keyword); // Convert keyword to ID (assuming it's numeric)
-                students = studentRepository.findStudentById(key); // Custom query to find student by ID
-            } catch (NumberFormatException e) {
-                students = List.of(); // Return empty list if keyword is not numeric
-            }
+            long key = Long.parseLong(keyword);
+            students = studentRepository.findStudentById(key);
         }
-        model.addAttribute("listStudents", students); // Add students to model for rendering
-        return "students"; // Return view name "students"
+        model.addAttribute("listStudents", students);
+        model.addAttribute("num", num); // Pass the flag to the view
+        num = 0; // Reset flag after displaying the message
+        return "students";
     }
 
-    // Delete a student by ID
-    @GetMapping("/delete")
-    public String deleteStudent(@RequestParam("id") Long id) {
-        studentRepository.deleteById(id); // Delete student with the specified ID
-        return "redirect:/index"; // Redirect back to the student list page
+    @PostMapping("/addStudent")
+    public String addStudent(Student student) {
+        studentRepository.save(student);
+        num = 1; // Set flag to show success message
+        return "redirect:/index";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteStudent(@PathVariable("id") Long id) {
+        studentRepository.deleteById(id);
+        num = 2; // Set flag to indicate deletion
+        return "redirect:/index";
     }
 }
