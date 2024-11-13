@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="template1"> <!-- Applies the layout from template1.html -->
+<head>
+  <meta charset="UTF-8">
+  <title>List of Students</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/5.1.3/css/bootstrap.min.css">
+  <style>
+    .pre-scrollable {
+      height: 500px;
+      overflow-y: scroll;
+    }
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div layout:fragment="content"> <!-- Defines the content to be injected into template1.html -->
+  <h1>List of Students</h1>
+  <div class="container mt-2 pre-scrollable">
+    <div class="card-header">Student List</div>
+    <div class="card-body">
+      <form method="get" th:action="@{/index}">
+        <label>Key Word</label>
+        <input type="text" name="keyword">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <button type="submit" class="btn btn-primary">See All</button>
+      </form>
+      <table class="table">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Date of Birth</th>
+          <th>Pass</th>
+          <th>GPA</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${listStudents}">
+          <td th:text="${p.getId()}"></td>
+          <td th:text="${p.getName()}"></td>
+          <td th:text="${p.getDob()}"></td>
+          <td th:text="${p.passed}"></td>
+          <td th:text="${p.getGpa()}"></td>
+          <td>
+            <a class="btn btn-danger"
+               onclick="return confirm('Are you sure you want to delete this record?')"
+               th:href="@{/delete(id=${p.id})}">
+              Delete
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
