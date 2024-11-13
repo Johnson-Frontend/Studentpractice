@@ -32,7 +32,8 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>3.1.0</version> <!-- Adjust this if needed -->
         </dependency>
 
         <dependency>
@@ -42,6 +43,15 @@
 
 
         </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+
 
 
         <dependency>
